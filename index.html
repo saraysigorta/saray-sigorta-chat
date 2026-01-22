@@ -35,7 +35,7 @@ button {
 <button onclick="send()">Gönder</button>
 
 <script>
-const WEBHOOK_URL = "BURAYA_N8N_WEBHOOK_URL";
+const WEBHOOK_URL = "https://saray-sigorta-n8n.onrender.com/webhook/sigorta-chat";
 
 let sessionId =
   localStorage.getItem("session_id") ||
@@ -76,4 +76,5 @@ async function send() {
 
 </body>
 </html>
+
 
