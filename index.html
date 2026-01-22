@@ -35,47 +35,39 @@ button {
 <button onclick="send()">Gönder</button>
 
 <script>
-const WEBHOOK_URL = "https://saray-sigorta-n8n.onrender.com/webhook/sigorta-chat";
+async function sendMessage() {
+  const input = document.getElementById("chatInput");
+  const message = input.value.trim();
+  if (!message) return;
 
-let sessionId =
-  localStorage.getItem("session_id") ||
-  crypto.randomUUID();
-
-localStorage.setItem("session_id", sessionId);
-
-function add(who, text) {
-  document.getElementById("chat").innerHTML +=
-    `<p><b>${who}</b> ${text}</p>`;
-}
-
-async function send() {
-  const input = document.getElementById("msg");
-  const msg = input.value.trim();
-  if (!msg) return;
-
-  add("👤", msg);
-
-  // 🔥 INPUT’U ZORLA TEMİZLE
+  // input'u HEMEN temizle (senin 1. sorunun)
   input.value = "";
-  input.focus();
 
-  const res = await fetch(WEBHOOK_URL, {
-    method: "POST",
-    headers: {"Content-Type":"application/json"},
-    body: JSON.stringify({
-      message: msg,
-      session_id: sessionId
-    })
-  });
+  try {
+    const response = await fetch("https://saray-sigorta-n8n.onrender.com/webhook/sigorta-chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        message: message
+      })
+    });
 
-  const data = await res.json();
-  add("🤖", data.reply);
+    const data = await response.json();
+    console.log("AI Response:", data);
+
+    // cevabı ekrana bas
+    addBotMessage(data.reply || "Cevap alınamadı");
+  } catch (err) {
+    console.error("Fetch error:", err);
+  }
 }
-
 </script>
 
 </body>
 </html>
+
 
 
 
