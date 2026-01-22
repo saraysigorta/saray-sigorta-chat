@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Saray Sigorta AI</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background:#f4f4f4;
+}
+#chat {
+  height: 400px;
+  overflow-y: auto;
+  background:#fff;
+  padding:10px;
+  border-radius:6px;
+}
+input {
+  width:75%;
+  padding:10px;
+}
+button {
+  padding:10px;
+}
+</style>
+</head>
+
+<body>
+
+<h3>💬 Saray Sigorta Online Danışman</h3>
+
+<div id="chat"></div><br>
+
+<input id="msg" placeholder="Mesajınızı yazın">
+<button onclick="send()">Gönder</button>
+
+<script>
+const WEBHOOK_URL = "BURAYA_N8N_WEBHOOK_URL";
+
+let sessionId =
+  localStorage.getItem("session_id") ||
+  crypto.randomUUID();
+
+localStorage.setItem("session_id", sessionId);
+
+function add(who, text) {
+  document.getElementById("chat").innerHTML +=
+    `<p><b>${who}</b> ${text}</p>`;
+}
+
+async function send() {
+  const msg = document.getElementById("msg").value;
+  if (!msg) return;
+
+  add("👤", msg);
+  document.getElementById("msg").value = "";
+
+  const res = await fetch(WEBHOOK_URL, {
+    method: "POST",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify({
+      message: msg,
+      session_id: sessionId
+    })
+  });
+
+  const data = await res.json();
+  add("🤖", data.reply);
+}
+</script>
+
+</body>
+</html>
